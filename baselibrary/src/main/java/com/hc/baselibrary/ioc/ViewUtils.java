@@ -100,8 +100,10 @@ public class ViewUtils {
                 mMethod.invoke(mObject, v);
             } catch (Exception e) {
                 e.printStackTrace();
+                // 传一个空数组
+                Object[] object = new Object[]{};
                 try {
-                    mMethod.invoke(mObject, null);
+                    mMethod.invoke(mObject, object);
                 } catch (Exception e1) {
                     e1.printStackTrace();
                 }

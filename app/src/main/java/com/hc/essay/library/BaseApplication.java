@@ -1,9 +1,11 @@
 package com.hc.essay.library;
 
-import android.app.Application;
-
 import com.alipay.euler.andfix.patch.PatchManager;
+import com.example.administrator.framelibrary.http.OkHttpEngine;
 import com.hc.baselibrary.fixbug.FixDexManager;
+import com.hc.baselibrary.http.HttpUtils;
+
+import org.litepal.LitePalApplication;
 
 /**
  * Email 240336124@qq.com
@@ -11,13 +13,16 @@ import com.hc.baselibrary.fixbug.FixDexManager;
  * Version 1.0
  * Description:
  */
-public class BaseApplication extends Application {
+public class BaseApplication extends LitePalApplication {
 
     public static PatchManager mPatchManager;
 
     @Override
     public void onCreate() {
         super.onCreate();
+
+        HttpUtils.init(new OkHttpEngine());
+
         // 设置全局异常捕捉类
         // ExceptionCrashHandler.getInstance().init(this);
 

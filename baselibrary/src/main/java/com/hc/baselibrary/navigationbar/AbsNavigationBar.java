@@ -68,13 +68,12 @@ public abstract class AbsNavigationBar<P extends AbsNavigationBar.Builder.AbsNav
         if(mParams.mParent == null){
             // 获取activity的根布局，View源码
             ViewGroup activityRoot = (ViewGroup) ((Activity)(mParams.mContext))
-                    .findViewById(android.R.id.content);
+                    .getWindow().getDecorView();
             mParams.mParent = (ViewGroup) activityRoot.getChildAt(0);
             Log.e("TAG",mParams.mParent+"");
         }
 
         // 处理Activity的源码，后面再去看
-
 
         if(mParams.mParent == null){
             return;
