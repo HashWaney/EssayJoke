@@ -16,7 +16,6 @@ public class TestActivity extends BaseSkinActivity implements View.OnClickListen
     @Override
     protected void initView() {
         // 初始化View
-        viewById(R.id.test_tv).setOnClickListener(this);
     }
 
     @Override

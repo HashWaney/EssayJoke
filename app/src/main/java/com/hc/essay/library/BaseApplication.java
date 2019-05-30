@@ -2,6 +2,7 @@ package com.hc.essay.library;
 
 import com.alipay.euler.andfix.patch.PatchManager;
 import com.example.administrator.framelibrary.http.OkHttpEngine;
+import com.example.administrator.framelibrary.skin.SkinManager;
 import com.hc.baselibrary.fixbug.FixDexManager;
 import com.hc.baselibrary.http.HttpUtils;
 
@@ -22,6 +23,8 @@ public class BaseApplication extends LitePalApplication {
         super.onCreate();
 
         HttpUtils.init(new OkHttpEngine());
+
+        SkinManager.getInstance().init(this);
 
         // 设置全局异常捕捉类
         // ExceptionCrashHandler.getInstance().init(this);
