@@ -19,10 +19,11 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.1.1'
-    compile project(':baselibrary')
-    compile 'com.alipay.euler:andfix:0.5.0@aar'
-    compile 'com.google.code.gson:gson:2.2.4'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    testImplementation 'junit:junit:4.12'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.alipay.euler:andfix:0.5.0@aar'
+    implementation 'com.google.code.gson:gson:2.8.5'
+    api project(path: ':baselibrary')
+    implementation 'com.squareup.okhttp3:okhttp:3.14.2'
 }

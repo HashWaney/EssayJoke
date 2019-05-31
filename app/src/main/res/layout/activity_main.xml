@@ -13,7 +13,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:onClick="skin"
             android:textColor="@color/main_bg_color"
             android:text="换肤" />
 
@@ -23,7 +22,6 @@
             android:layout_height="wrap_content"
             android:padding="10dp"
             android:textColor="@color/main_bg_color"
-            android:onClick="skin1"
             android:layout_marginTop="10dp"
             android:text="默认" />
 
@@ -33,7 +31,6 @@
             android:layout_height="wrap_content"
             android:padding="10dp"
             android:textColor="@color/main_bg_color"
-            android:onClick="skin2"
             android:layout_marginTop="10dp"
             android:text="跳转" />
 

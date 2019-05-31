@@ -1,6 +1,5 @@
 package com.hc.essay.library;
 
-import com.alipay.euler.andfix.patch.PatchManager;
 import com.example.administrator.framelibrary.http.OkHttpEngine;
 import com.example.administrator.framelibrary.skin.SkinManager;
 import com.hc.baselibrary.fixbug.FixDexManager;
@@ -16,7 +15,6 @@ import org.litepal.LitePalApplication;
  */
 public class BaseApplication extends LitePalApplication {
 
-    public static PatchManager mPatchManager;
 
     @Override
     public void onCreate() {
