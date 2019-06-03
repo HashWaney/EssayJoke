@@ -59,7 +59,7 @@ public class DefaultNavigationBar<D extends
         }
 
         @Override
-        public DefaultNavigationBar builder() {
+        public DefaultNavigationBar build() {
             DefaultNavigationBar navigationBar = new DefaultNavigationBar(P);
             return navigationBar;
         }

@@ -138,7 +138,7 @@ public class MainActivity extends BaseSkinActivity {
                 DefaultNavigationBar.Builder(this)
                 .setTitle("首页")
                 .setLeftIconGone()
-                .builder();
+                .build();
     }
 
     @OnClick(R.id.home_rb)

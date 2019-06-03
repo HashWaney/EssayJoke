@@ -51,7 +51,7 @@ public class WebActivity extends Activity {
         DefaultNavigationBar navigationBar = new
                 DefaultNavigationBar.Builder(this)
                 .setTitle("新闻")
-                .builder();
+                .build();
         webView = (WebView) findViewById(R.id.webView);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setSupportZoom(true);

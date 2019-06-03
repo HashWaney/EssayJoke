@@ -53,7 +53,7 @@ public abstract class AbsNavigationBar<P extends AbsNavigationBar.Builder.AbsNav
     /**
      * 设置左侧返回布局
      */
-    public void setLeftIconGone(int viewId ,boolean isGone){
+    protected void setLeftIconGone(int viewId ,boolean isGone){
         TextView tv = findViewById(viewId);
         if(isGone){
             tv.setVisibility(View.GONE);
@@ -114,7 +114,7 @@ public abstract class AbsNavigationBar<P extends AbsNavigationBar.Builder.AbsNav
 
         }
 
-        public abstract AbsNavigationBar builder();
+        public abstract AbsNavigationBar build();
 
 
         public static class AbsNavigationParams {
