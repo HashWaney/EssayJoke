@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.View;
 
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.Toast;
 import com.example.administrator.framelibrary.BaseSkinActivity;
 import com.example.administrator.framelibrary.DefaultNavigationBar;
@@ -24,14 +25,20 @@ import com.example.administrator.framelibrary.HttpCallBack;
 import com.example.administrator.framelibrary.skin.SkinManager;
 import com.example.administrator.framelibrary.skin.SkinResource;
 import com.hc.baselibrary.http.HttpUtils;
+import com.hc.baselibrary.ioc.OnClick;
 import com.hc.baselibrary.ioc.ViewById;
 import com.hc.baselibrary.permission.PermissionFail;
 import com.hc.baselibrary.permission.PermissionHelper;
 import com.hc.baselibrary.permission.PermissionSucceed;
+import com.hc.essay.library.fragment.FindFragment;
+import com.hc.essay.library.fragment.HomeFragment;
+import com.hc.essay.library.fragment.MessageFragment;
+import com.hc.essay.library.fragment.NewFragment;
 import com.hc.essay.library.mode.DiscoverListResult;
 
 import java.io.File;
 import java.lang.reflect.Method;
+import java.util.Map;
 
 
 public class MainActivity extends BaseSkinActivity {
@@ -42,9 +49,20 @@ public class MainActivity extends BaseSkinActivity {
     private boolean isCache = false;
 
 
+    private HomeFragment mHomeFragment;
+    private FindFragment mFindFragment;
+    private NewFragment mNewFragment;
+    private MessageFragment mMessageFragment;
+
+    private FragmentManagerHelper mFragmentHelper;
+
+
+
     @Override
     protected void initData() {
         startService();
+
+        initFragment();
 
         initPermission();
         // 路径和参数是不能让别人反编译的，NDK -> .so  1.列表保存第一次，2.有些是保存最后所有
@@ -54,22 +72,48 @@ public class MainActivity extends BaseSkinActivity {
                 new HttpCallBack<DiscoverListResult>() {
             @Override
             public void onError(Exception e) {
-
+                dismissLoadView();
             }
 
             @Override
             public void onSuccess(DiscoverListResult result) {
                 Log.i(TAG, "onSuccess: result = " + result.getWeatherinfo().getCity());
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(2000);
+                            dismissLoadView();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+
                 // 成功回掉这个方法
                 //　目前是没有缓存，现在有了数据库，还有了网络引擎
                 // 思路  某些接口如果需要缓存请自己带标示
             }
-        });
+
+                    @Override
+                    public void onPreExecute(Context context, Map<String, Object> params) {
+                        super.onPreExecute(context, params);
+                        Log.i(TAG, "onPreExecute: params" + params);
+                        addLoadView();
+                    }
+                });
 
 
 
 
     }
+
+    private void initFragment() {
+        mFragmentHelper = new FragmentManagerHelper(getSupportFragmentManager(), R.id.main_tab_fl);
+        mHomeFragment = new HomeFragment();
+        mFragmentHelper.add(mHomeFragment);
+    }
+
 
     private void startService() {
         startService(new Intent(this ,MessageService.class));
@@ -84,14 +128,49 @@ public class MainActivity extends BaseSkinActivity {
     @Override
     protected void initView() {
         // 初始化 View
+        RadioButton homeRb = findViewById(R.id.home_rb);
+        homeRb.setChecked(true);
     }
 
     @Override
     protected void initTitle() {
         DefaultNavigationBar navigationBar = new
                 DefaultNavigationBar.Builder(this)
-                .setTitle("投稿")
+                .setTitle("首页")
+                .setLeftIconGone()
                 .builder();
+    }
+
+    @OnClick(R.id.home_rb)
+    private void homeRbClick() {
+        if (mHomeFragment == null) {
+            mHomeFragment = new HomeFragment();
+        }
+        mFragmentHelper.switchFragment(mHomeFragment);
+    }
+
+    @OnClick(R.id.find_rb)
+    private void findRbClick() {
+        if (mFindFragment == null) {
+            mFindFragment = new FindFragment();
+        }
+        mFragmentHelper.switchFragment(mFindFragment);
+    }
+
+    @OnClick(R.id.new_rb)
+    private void newRbClick() {
+        if (mNewFragment == null) {
+            mNewFragment = new NewFragment();
+        }
+        mFragmentHelper.switchFragment(mNewFragment);
+    }
+
+    @OnClick(R.id.message_rb)
+    private void messageRbClick() {
+        if (mMessageFragment == null) {
+            mMessageFragment = new MessageFragment();
+        }
+        mFragmentHelper.switchFragment(mMessageFragment);
     }
 
     @Override

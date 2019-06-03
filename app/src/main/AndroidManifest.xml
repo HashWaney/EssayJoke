@@ -23,6 +23,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+                android:name=".WebActivity"/>
         <service android:name=".MessageService"/>
         <service android:name=".GuardService"
                  android:process=":guardService"/>

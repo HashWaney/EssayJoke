@@ -17,6 +17,8 @@ public class DefaultNavigationBar<D extends
         DefaultNavigationBar.Builder.DefaultNavigationParams> extends
         AbsNavigationBar<DefaultNavigationBar.Builder.DefaultNavigationParams> {
 
+
+
     public DefaultNavigationBar(DefaultNavigationBar.Builder.DefaultNavigationParams params) {
         super(params);
     }
@@ -33,6 +35,9 @@ public class DefaultNavigationBar<D extends
         setText(R.id.title, getParams().mTitle);
         setText(R.id.right_text, getParams().mRightText);
 
+        //绑定左边监听
+        setLeftIconGone(R.id.back ,getParams().isGone);
+
         setOnClickListener(R.id.right_text, getParams().mRightClickListener);
         // 左边 要写一个默认的  finishActivity
         setOnClickListener(R.id.back,getParams().mLeftClickListener);
@@ -40,7 +45,6 @@ public class DefaultNavigationBar<D extends
 
 
     public static class Builder extends AbsNavigationBar.Builder {
-
         DefaultNavigationParams P;
 
 
@@ -73,6 +77,11 @@ public class DefaultNavigationBar<D extends
             return this;
         }
 
+
+
+
+
+
         /**
          * 设置右边的点击事件
          */
@@ -95,7 +104,11 @@ public class DefaultNavigationBar<D extends
          * 设置右边的图片
          */
         public DefaultNavigationBar.Builder setRightIcon(int rightRes) {
+            return this;
+        }
 
+        public DefaultNavigationBar.Builder setLeftIconGone() {
+            P.isGone = true;
             return this;
         }
 
@@ -107,6 +120,9 @@ public class DefaultNavigationBar<D extends
             public String mTitle;
 
             public String mRightText;
+
+
+            public boolean isGone;
 
             // 后面还有一些通用的
             public View.OnClickListener mRightClickListener;

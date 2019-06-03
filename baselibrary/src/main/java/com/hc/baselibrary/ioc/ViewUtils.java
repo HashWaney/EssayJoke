@@ -1,9 +1,6 @@
 package com.hc.baselibrary.ioc;
 
 import android.app.Activity;
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.view.View;
 import android.widget.Toast;
 
@@ -11,154 +8,131 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 /**
- * Email 240336124@qq.com
- * Created by Darren on 2017/2/5.
- * Version 1.0
- * Description:
+ * Created by hui on 2016/10/8.
  */
 public class ViewUtils {
 
-    // 目前
-    public static void inject(Activity activity) {
-        inject(new ViewFinder(activity), activity);
+    public static void inject(Activity activity){
+        // 处理ViewById注解
+        findViewById(activity,new ViewFinder(activity));
+        // 处理OnClick注解
+        onClick(activity,new ViewFinder(activity));
     }
 
-    // 后期
+
     public static void inject(View view) {
-        inject(new ViewFinder(view), view);
-    }
-
-    // 后期
-    public static void inject(View view, Object object) {
-        inject(new ViewFinder(view), object);
-    }
-
-    // 兼容 上面三个方法  object --> 反射需要执行的类
-    private static void inject(ViewFinder finder, Object object) {
-        injectFiled(finder, object);
-        injectEvent(finder, object);
+        findViewById(view,new ViewFinder(view));
+        onClick(view,new ViewFinder(view));
     }
 
     /**
-     * 事件注入
+     * 用在Fragment
      */
-    private static void injectEvent(ViewFinder finder, Object object) {
-        // 1. 获取类里面所有的方法
-        Class<?> clazz = object.getClass();
+    public static void inject(Object handleObj, View view) {
+        findViewById(handleObj,new ViewFinder(view));
+        onClick(handleObj,new ViewFinder(view));
+    }
+
+
+    /**
+     * 处理OnClick注解
+     */
+    private static void onClick(final Object handleObj, ViewFinder viewFinder) {
+        // findViewById  setOnClick
+        // 1.获取该Activity的所有方法
+        Class<?> clazz = handleObj.getClass();
+
         Method[] methods = clazz.getDeclaredMethods();
 
-        // 2. 获取Onclick的里面的value值
-        for (Method method : methods) {
+        // 2.遍历方法获取所有的值
+        for (final Method method:methods){
+            // 2.1 获取OnClick注解
             OnClick onClick = method.getAnnotation(OnClick.class);
-            if (onClick != null) {
-                int[] viewIds = onClick.value();
-                for (int viewId : viewIds) {
-                    // 3. findViewById 找到View
-                    View view = finder.findViewById(viewId);
+
+            // 2.2 该方法上是否有OnClick注解
+            if(onClick != null){
+                // 2.3 获取OnClick里面所有的值
+                int[] viewIds = onClick.value();// @OnClick({R.id.text_view,R.id.button})
+
+                // 2.4 先findViewById , setOnclick
+                for (int viewId:viewIds){
+                    // 先findViewById
+                    final View view = viewFinder.findViewById(viewId);
+                    // 后设置setOnclick
+                    view.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            // 首先需要判断 方法是否需要检测网络
+                            CheckNet checkNet = method.getAnnotation(CheckNet.class);
+                            // 判断有没有配置需要检测网络的注解
+                            if(checkNet != null){
+                                // 需要检测网络
+                                if(!NetManagerUtil.isOpenNetwork(v.getContext())){
+                                    // 当前无网络
+                                    Toast.makeText(v.getContext(), "当前无网络~", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                            }
 
 
-                    // 扩展功能 检测网络
-                    boolean isCheckNet = method.getAnnotation(CheckNet.class) != null;
+                            // 3.反射调用原来配置了OnClick的方法
+                            method.setAccessible(true);// 私有的方法
 
-                    if (view != null) {
-                        // 4. view.setOnClickListener
-                        view.setOnClickListener(new DeclaredOnClickListener(method, object, isCheckNet));
-                    }
-                }
-            }
-        }
-    }
-
-
-    private static class DeclaredOnClickListener implements View.OnClickListener {
-        private Object mObject;
-        private Method mMethod;
-        private boolean mIsCheckNet;
-
-        public DeclaredOnClickListener(Method method, Object object, boolean isCheckNet) {
-            this.mObject = object;
-            this.mMethod = method;
-            this.mIsCheckNet = isCheckNet;
-        }
-
-        @Override
-        public void onClick(View v) {
-            // 需不需要检测网络
-            if (mIsCheckNet) {
-                // 需要
-                if (!networkAvailable(v.getContext())) {
-                    // 打印Toast   "亲，您的网络不太给力"  写死有点问题  需要配置
-                    Toast.makeText(v.getContext(), "亲，您的网络不太给力", Toast.LENGTH_LONG).show();
-                    return;
-                }
-            }
-            // 点击会调用该方法
-            try {
-                // 所有方法都可以 包括私有共有
-                mMethod.setAccessible(true);
-                // 5. 反射执行方法
-                mMethod.invoke(mObject, v);
-            } catch (Exception e) {
-                e.printStackTrace();
-                // 传一个空数组
-                Object[] object = new Object[]{};
-                try {
-                    mMethod.invoke(mObject, object);
-                } catch (Exception e1) {
-                    e1.printStackTrace();
+                            try {
+                                method.invoke(handleObj);// 调用无参的方法
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                try {
+                                    method.invoke(handleObj,view);// 调用有参的方法 view 代表当前点击的View
+                                } catch (Exception e1) {
+                                    e1.printStackTrace();
+                                }
+                            }
+                        }
+                    });
                 }
             }
         }
     }
 
     /**
-     * 注入属性
+     * 解决注解ViewByID
+     *
+     * viewFinder findViewById
+     * handleObj 从哪个类里面反射
      */
-    private static void injectFiled(ViewFinder finder, Object object) {
-        // 1. 获取类里面所有的属性
-        Class<?> clazz = object.getClass();
-        // 获取所有属性包括私有和共有
-        Field[] fields = clazz.getDeclaredFields();
+    private static void findViewById(Object handleObj, ViewFinder viewFinder) {
+        // 1.获取该Activity的所有属性
+        Class<?> clazz = handleObj.getClass();
 
-        // 2. 获取ViewById的里面的value值
-        for (Field field : fields) {
+        //  clazz.getFields() 获取public
+        Field[] fields =  clazz.getDeclaredFields();// 获取该类的所有属性  包括私有等等
+
+        // 2.循环判断该属性上是否有ViewById注解
+        for(Field field:fields){
+            //  2.1  判断该属性上是否有ViewById注解
+            //  2.1 获取ViewByID注解
             ViewById viewById = field.getAnnotation(ViewById.class);
-            if (viewById != null) {
-                // 获取注解里面的id值  --> R.id.test_tv
+            if(viewById != null){
+                // 该属性上有viewById
+                // 2.2 获取   @ViewById(R.id.text_view)  R.id.text_view的值
                 int viewId = viewById.value();
-                // 3. findViewById 找到View
-                View view = finder.findViewById(viewId);
-                if (view != null) {
-                    // 能够注入所有修饰符  private public
-                    field.setAccessible(true);
-                    // 4. 动态的注入找到的View
-                    try {
-                        field.set(object, view);
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    }
+
+                // 3.利用activity的findViewById 动态注入给属性
+                View view = viewFinder.findViewById(viewId);
+
+                // 3.1 动态注入给属性
+                try {
+                    // java.lang.IllegalAccessException: access to field not allowed
+                    field.setAccessible(true);// 私有属性可以动态注入
+                    // activity 该属性在哪一个类   view 给该属性设置的值
+                    field.set(handleObj,view);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
                 }
             }
         }
     }
 
 
-    /**
-     * 判断当前网络是否可用
-     */
-    private static boolean networkAvailable(Context context) {
-        // 得到连接管理器对象
-        try {
-            ConnectivityManager connectivityManager = (ConnectivityManager) context
-                    .getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo activeNetworkInfo = connectivityManager
-                    .getActiveNetworkInfo();
-            if (activeNetworkInfo != null && activeNetworkInfo.isConnected()) {
-                return true;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
 }

@@ -1,43 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:id="@+id/activity_main"
+              android:id="@+id/root_view"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:padding="10dp"
-              android:orientation="vertical"
-              android:background="@color/main_bg_color"
-              tools:context="com.example.administrator.framelibrary.BaseSkinActivity">
+              android:clipToPadding="false"
+              android:fitsSystemWindows="true"
+              android:orientation="vertical">
 
-    <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:textColor="@color/main_bg_color"
-            android:text="换肤" />
+    <FrameLayout
+            android:id="@+id/main_tab_fl"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
+    <RadioGroup
+            android:background="@color/title_bar_bg_day"
+            android:id="@android:id/tabs"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/tab_height"
+            android:layout_alignParentBottom="true"
+            android:gravity="bottom"
+            android:orientation="horizontal">
 
-    <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:textColor="@color/main_bg_color"
-            android:layout_marginTop="10dp"
-            android:text="默认" />
+        <RadioButton
+                android:id="@+id/home_rb"
+                style="@style/home_bottom_tab_style"
+                android:drawableTop="@drawable/ic_tab_home"
+                android:text="首页" />
 
+        <RadioButton
+                android:id="@+id/find_rb"
+                style="@style/home_bottom_tab_style"
+                android:drawableTop="@drawable/ic_tab_discovery"
+                android:text="发现" />
 
-    <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:textColor="@color/main_bg_color"
-            android:layout_marginTop="10dp"
-            android:text="跳转" />
+        <RadioButton
+                android:id="@+id/new_rb"
+                style="@style/home_bottom_tab_style"
+                android:drawableTop="@drawable/ic_tab_fresh"
+                android:text="新鲜" />
 
-    <ImageView
-            android:layout_margin="10dp"
-            android:layout_width="wrap_content"
-            android:src="@drawable/main_bg"
-            android:layout_height="wrap_content" />
-
+        <RadioButton
+                android:id="@+id/message_rb"
+                style="@style/home_bottom_tab_style"
+                android:drawableTop="@drawable/ic_tab_msg"
+                android:text="消息" />
+    </RadioGroup>
 </LinearLayout>

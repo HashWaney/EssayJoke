@@ -7,7 +7,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Email 240336124@qq.com
@@ -42,7 +45,23 @@ public abstract class AbsNavigationBar<P extends AbsNavigationBar.Builder.AbsNav
         if(!TextUtils.isEmpty(text)){
             tv.setVisibility(View.VISIBLE);
             tv.setText(text);
+        }else {
+            tv.setVisibility(View.GONE);
         }
+    }
+
+    /**
+     * 设置左侧返回布局
+     */
+    public void setLeftIconGone(int viewId ,boolean isGone){
+        TextView tv = findViewById(viewId);
+        if(isGone){
+            tv.setVisibility(View.GONE);
+            Log.i(TAG, "setLeftText: ty(View.GONE); ");
+        }else {
+            tv.setVisibility(View.VISIBLE);
+        }
+
     }
 
     /**

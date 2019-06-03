@@ -1,6 +1,7 @@
 package com.example.administrator.framelibrary.http;
 
 import android.content.Context;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -32,6 +33,8 @@ import okhttp3.Response;
  */
 public class OkHttpEngine implements IHttpEngine {
     private static OkHttpClient mOkHttpClient = new OkHttpClient();
+
+    private static Handler mHandler = new Handler();
 
     @Override
     public void post(boolean cache, Context context, String url, Map<String, Object> params, final EngineCallBack callBack) {
@@ -142,13 +145,19 @@ public class OkHttpEngine implements IHttpEngine {
 
         mOkHttpClient.newCall(request).enqueue(new Callback() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                callBack.onError(e);
+            public void onFailure(Call call, final IOException e) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        // 都不是在主线程中
+                        callBack.onError(e);
+                    }
+                });
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                String resultJson = response.body().string();
+                final String resultJson = response.body().string();
                 // 获取数据之后会执行成功方法
                 if (cache) {
                     String cacheResultJson = CacheDataUtil.getCacheResultJson(finalUrl);
@@ -161,8 +170,15 @@ public class OkHttpEngine implements IHttpEngine {
                         }
                     }
                 }
-                // 2.2 执行成功方法
-                callBack.onSuccess(resultJson);
+                mHandler.post(new Runnable() {
+                                  @Override
+                                  public void run() {
+                                      // 2.2 执行成功方法
+                                      callBack.onSuccess(resultJson);
+                                  }
+                              }
+                );
+
                 Log.e("Get返回结果：", resultJson);
                 if (cache) {
                     // 2.3 缓存数据

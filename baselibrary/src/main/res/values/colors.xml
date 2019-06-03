@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="white">#FFFFFF</color>
+    <!-- 头部颜色 -->
+    <color name="title_bar_bg_day">#ffdcd9cf</color>
+
+    <color name="title_text">#ff483c31</color>
+
+    <!-- 灰色 -->
+    <color name="main_gray"> #767676</color>
+
+    <!-- 主色 -->
+    <color name="main_color">#c0ae81</color>
+
+    <!-- 没有颜色 -->
+    <color name="no_color">#00000000</color>
+
+    <color name="triangle">#aa72d572</color>
+    <color name="circle">#aa738ffe</color>
+    <color name="rect">#aae84e40</color>
+    <color name="shadow">#25808080</color>
+</resources>
