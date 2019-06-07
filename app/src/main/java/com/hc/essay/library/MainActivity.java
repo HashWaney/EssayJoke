@@ -170,7 +170,7 @@ public class MainActivity extends BaseSkinActivity {
         if (mMessageFragment == null) {
             mMessageFragment = new MessageFragment();
         }
-        mFragmentHelper.switchFragment(mMessageFragment);
+
     }
 
     @Override

@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:name="com.hc.essay.library.BaseApplication"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name="com.hc.essay.library.MainActivity">
+        <activity android:name=".TestActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -25,12 +25,17 @@
         </activity>
         <activity
                 android:name=".WebActivity"/>
+        <activity
+                android:name=".imageselector.ImageSelectorActivity"/>
+
+
         <service android:name=".MessageService"/>
         <service android:name=".GuardService"
                  android:process=":guardService"/>
         <service android:name=".JobWakeUpService"
                  android:enabled="true"
                  android:permission="android.permission.BIND_JOB_SERVICE"/>
+
     </application>
 
 </manifest>
